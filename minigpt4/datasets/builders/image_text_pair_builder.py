@@ -2,10 +2,12 @@ import os
 import logging
 import warnings
 
+
 from minigpt4.common.registry import registry
 from minigpt4.datasets.builders.base_dataset_builder import BaseDatasetBuilder
 from minigpt4.datasets.datasets.laion_dataset import LaionDataset
 from minigpt4.datasets.datasets.cc_sbu_dataset import CCSBUDataset, CCSBUAlignDataset
+from minigpt4.datasets.datasets.science_qa_dataset import ScienceQADataset
 
 
 @registry.register_builder("cc_sbu")
@@ -95,19 +97,20 @@ class CCSBUAlignBuilder(BaseDatasetBuilder):
 
         # create datasets
         dataset_cls = self.train_dataset_cls
-        datasets['train'] = dataset_cls(
+        datasets["train"] = dataset_cls(
             vis_processor=self.vis_processors["train"],
             text_processor=self.text_processors["train"],
-            ann_paths=[os.path.join(storage_path, 'filter_cap.json')],
-            vis_root=os.path.join(storage_path, 'image'),
+            ann_paths=[os.path.join(storage_path, "filter_cap.json")],
+            vis_root=os.path.join(storage_path, "image"),
         )
 
         return datasets
 
+
 @registry.register_builder("ScienceQA")
 class ScienceQABuilder(BaseDatasetBuilder):
     train_dataset_cls = ScienceQADataset
-    
+
     DATASET_CONFIG_DICT = {
         "default": "configs/datasets/ScienceQA/align.yaml",
     }
@@ -116,7 +119,7 @@ class ScienceQABuilder(BaseDatasetBuilder):
         # at this point, all the annotations and image/videos should be all downloaded to the specified locations.
         logging.info("Building datasets...")
         self.build_processors()
-        
+
         build_info = self.config.build_info
         storage_path = build_info.storage
 
@@ -127,11 +130,11 @@ class ScienceQABuilder(BaseDatasetBuilder):
 
         # create datasets
         dataset_cls = self.train_dataset_cls
-        datasets['train'] = dataset_cls(
+        datasets["train"] = dataset_cls(
             vis_processor=self.vis_processors["train"],
             text_processor=self.text_processors["train"],
-            ann_paths=[os.path.join(storage_path, 'train_QCM-A.json')],
-            vis_root=os.path.join(storage_path, 'train'),
+            ann_paths=[os.path.join(storage_path, "train_QCM-A.json")],
+            vis_root=os.path.join(storage_path, "train"),
         )
 
         return datasets
